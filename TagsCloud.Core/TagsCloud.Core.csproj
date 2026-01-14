@@ -1,0 +1,15 @@
+﻿<Project Sdk="Microsoft.NET.Sdk">
+
+    <PropertyGroup>
+        <TargetFramework>net8.0</TargetFramework>
+        <ImplicitUsings>enable</ImplicitUsings>
+        <Nullable>enable</Nullable>
+        <RootNamespace>TagsCloud.Infrastructure</RootNamespace>
+    </PropertyGroup>
+
+    <ItemGroup>
+        <PackageReference Include="FreeSpire.Doc" Version="12.2.0"/>
+        <PackageReference Include="System.Drawing.Common" Version="10.0.1"/>
+    </ItemGroup>
+
+</Project>
