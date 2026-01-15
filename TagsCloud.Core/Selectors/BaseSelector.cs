@@ -1,6 +1,7 @@
-using TagsCloud.Infrastructure.Services;
+using TagsCloud.Core.Models;
+using TagsCloud.Core.Services;
 
-namespace TagsCloud.Infrastructure.Selectors;
+namespace TagsCloud.Core.Selectors;
 
 public abstract class BaseSelector<T> where T : INamedService
 {
@@ -11,11 +12,11 @@ public abstract class BaseSelector<T> where T : INamedService
         this.services = services.ToDictionary(s => s.Name);
     }
 
-    public T Select(string name)
+    public Result<T> Select(string name)
     {
         if (!services.TryGetValue(name, out var service))
-            throw new ArgumentException($"Параметр {name} не найден");
+            return Result<T>.Fail($"Параметр {name} не найден");
 
-        return service;
+        return Result<T>.Ok(service);
     }
 }

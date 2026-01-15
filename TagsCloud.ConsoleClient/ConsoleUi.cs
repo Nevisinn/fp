@@ -1,6 +1,6 @@
 using CommandLine;
+using TagsCloud.Core.Services.ImageGeneration.CloudVisualizers;
 using TagsCloud.Dtos;
-using TagsCloud.Infrastructure.Services.ImageGeneration.CloudVisualizers;
 
 namespace TagsCloud;
 
@@ -20,18 +20,31 @@ public class ConsoleUi
         Parser.Default.ParseArguments<ConsoleProgramOptionsDto>(args)
             .WithParsed(options =>
             {
-                try
+                var mapProgramOptions = mapper.Map(options);
+                if (!mapProgramOptions.IsSuccess)
                 {
-                    var programOptions = mapper.Map(options);
-
-                    var words = programOptions.WordsProvider.ReadFile(options.InputWordsFilePath);
-
-                    visualizer.VisualizeWordsWithOptions(words, programOptions);
+                    Console.WriteLine($"{mapProgramOptions.Error}");
+                    return;
                 }
-                catch (Exception ex)
+
+                var programOptions = mapProgramOptions.Value!;
+                var readFile= programOptions.WordsProvider.ReadFile(options.InputWordsFilePath);
+                if (!readFile.IsSuccess)
                 {
-                    Console.WriteLine($"Ошибка: {ex.Message}");
+                    Console.WriteLine(readFile.Error);
+                    return;
                 }
+
+                var words = readFile.Value!;
+                    
+                var visualize = visualizer.VisualizeWordsWithOptions(words, programOptions);
+                if (!visualize.IsSuccess)
+                {
+                    Console.WriteLine(visualize.Error);
+                    return;
+                }
+
+                Console.WriteLine(visualize.Value);
             })
             .WithNotParsed(errors => { Console.WriteLine($"{errors}"); });
     }

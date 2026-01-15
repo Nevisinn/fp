@@ -1,7 +1,7 @@
 using System.Drawing;
 using System.Drawing.Imaging;
 
-namespace TagsCloud.Infrastructure.Services.ImageGeneration;
+namespace TagsCloud.Core.Services.ImageGeneration;
 
 public class ImageSaver
 {

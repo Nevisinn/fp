@@ -2,12 +2,12 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using FluentAssertions;
 using NUnit.Framework.Interfaces;
-using TagsCloud.Infrastructure.Extensions;
-using TagsCloud.Infrastructure.Models;
-using TagsCloud.Infrastructure.Services.ImageGeneration;
-using TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
-using TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
-using TagsCloud.Infrastructure.Services.LayoutAlgorithm.Spirals;
+using TagsCloud.Core.Extensions;
+using TagsCloud.Core.Models;
+using TagsCloud.Core.Services.ImageGeneration;
+using TagsCloud.Core.Services.ImageGeneration.ColorSchemeProviders;
+using TagsCloud.Core.Services.LayoutAlgorithm.CloudLayouters;
+using TagsCloud.Core.Services.LayoutAlgorithm.Spirals;
 
 namespace TagsCloud.Test.CloudLayouterTests;
 
@@ -51,28 +51,38 @@ public class CloudLayouterTests
     }
 
     [Test]
-    public void PutNextRectangle_ShouldThrowArgumentException_WhenInvalidSize()
+    public void PutNextRectangle_ShouldReturnFailure_WhenInvalidSize()
     {
-        var createZeroSize = () => cloudLayouter.PutNextRectangle(new Size(0, 0));
-        var createNegativeSize = () => cloudLayouter.PutNextRectangle(new Size(-10, -10));
+        var createZeroSize = cloudLayouter.PutNextRectangle(new Size(0, 0));
+        var createNegativeSize = cloudLayouter.PutNextRectangle(new Size(-10, -10));
 
-        createZeroSize.Should().Throw<ArgumentException>();
-        createNegativeSize.Should().Throw<ArgumentException>();
+        createZeroSize.IsSuccess.Should().BeFalse();
+        createNegativeSize.IsSuccess.Should().BeFalse();
+        createZeroSize.Error.Should().Be("Размер прямоугольника должен быть больше нуля");
+        createNegativeSize.Error.Should().Be("Размер прямоугольника должен быть больше нуля");
     }
 
     [Test]
     public void PutNextRectangle_ShouldNotIntersects_WhenSameSize()
-    {
-        var rectangle1 = cloudLayouter.PutNextRectangle(new Size(10, 10));
-        var rectangle2 = cloudLayouter.PutNextRectangle(new Size(10, 10));
-
+    {   
+        var putFirstRectangle = cloudLayouter.PutNextRectangle(new Size(10, 10));
+        var putSecondRectangle = cloudLayouter.PutNextRectangle(new Size(10, 10));
+        var rectangle1 = putFirstRectangle.Value;
+        var rectangle2 = putSecondRectangle.Value; 
+        
+        putFirstRectangle.IsSuccess.Should().BeTrue();
+        putSecondRectangle.IsSuccess.Should().BeTrue();
         rectangle1.IntersectsWith(rectangle2).Should().BeFalse();
     }
 
     [Test]
     public void PutNextRectangle_ShouldBeInCenter_WhenPutFirstRectangle()
-    {
-        var rectangle = cloudLayouter.PutNextRectangle(new Size(10, 10));
+    {   
+        var putRectangle = cloudLayouter.PutNextRectangle(new Size(10, 10));
+        
+        putRectangle.IsSuccess.Should().BeTrue();
+        
+        var rectangle = putRectangle.Value;
         var rectangleCenter = rectangle.Center();
 
         rectangleCenter.Should().Be(center);
@@ -93,10 +103,13 @@ public class CloudLayouterTests
     public void PutNextRectangle_ShouldHaveCorrectSize_WhenPutRectangle()
     {
         var size = new Size(15, 20);
+        
+        var putRectangle = cloudLayouter.PutNextRectangle(size);
+        putRectangle.IsSuccess.Should().BeTrue();
+        
+        var rectangle = putRectangle.Value;
 
-        var rect = cloudLayouter.PutNextRectangle(size);
-
-        rect.Width.Should().Be(size.Width);
-        rect.Height.Should().Be(size.Height);
+        rectangle.Width.Should().Be(size.Width);
+        rectangle.Height.Should().Be(size.Height);
     }
 }

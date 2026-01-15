@@ -1,7 +1,7 @@
-using TagsCloud.Infrastructure.Models;
-using TagsCloud.Infrastructure.Selectors;
+using TagsCloud.Core.Models;
+using TagsCloud.Core.Selectors;
 
-namespace TagsCloud.Infrastructure.Services.WordsProcessing.WordsHandlers;
+namespace TagsCloud.Core.Services.WordsProcessing.WordsHandlers;
 
 public class BoringWordsHandler : IWordsHandler
 {
@@ -15,39 +15,53 @@ public class BoringWordsHandler : IWordsHandler
     public IWordsHandler? NextHandler { get; set; }
     public ProgramOptions Options { get; set; } = null!;
 
-    public List<string> Handle(List<string> words)
+    public Result<List<string>> Handle(List<string> words)
     {
         var boringWordsFileExtension = Path.GetExtension(Options.InputBoringWordsFilePath).TrimStart('.').ToLower();
-        var provider = selector.Select(boringWordsFileExtension);
-        var boringWords = provider.ReadFile(Options.InputBoringWordsFilePath);
+        var selectProvider = selector.Select(boringWordsFileExtension);
 
-        ValidateBoringWords(boringWords);
+        if (!selectProvider.IsSuccess)
+            return Result<List<string>>.Fail(selectProvider.Error!);
+        
+        var provider = selectProvider.Value!;
+        
+        var readFile = provider.ReadFile(Options.InputBoringWordsFilePath);
+        if (!readFile.IsSuccess)
+            return Result<List<string>>.Fail(readFile.Error!);
+        
+        var boringWords = readFile.Value!;
 
+        var validateBoringWords = ValidateBoringWords(boringWords);
+        if (!validateBoringWords.IsSuccess)
+            return Result<List<string>>.Fail(validateBoringWords.Error!);
+        
         var handledWords = new List<string>();
 
         foreach (var word in words)
             if (!boringWords.Contains(word))
                 handledWords.Add(word);
 
-        return NextHandler != null ? NextHandler.Handle(handledWords) : handledWords;
+        return NextHandler != null ? NextHandler.Handle(handledWords) : Result<List<string>>.Ok(handledWords);
     }
 
-    private void ValidateBoringWords(List<string> boringWords)
+    private Result<None> ValidateBoringWords(List<string>? boringWords)
     {
-        if (boringWords == null) throw new ArgumentException("Список скучных слов не может быть null");
+        if (boringWords == null) return Result<None>.Fail("Список скучных слов не может быть null");
 
         var boringWordsSet = boringWords.ToHashSet();
 
         foreach (var boringWord in boringWordsSet)
         {
             if (string.IsNullOrEmpty(boringWord))
-                throw new ArgumentException("Каждое скучное слово должно быть непустой строкой и " +
-                                            "не содержать спецсимволов и цифр");
+                return Result<None>.Fail("Каждое скучное слово должно быть непустой строкой и " +
+                                         "не содержать спецсимволов и цифр");
 
             foreach (var c in boringWord)
                 if (!char.IsLetter(c))
-                    throw new ArgumentException("Каждое скучное слово должно быть непустой строкой и " +
-                                                "не содержать спецсимволов и цифр");
+                    return Result<None>.Fail("Каждое скучное слово должно быть непустой строкой и " +
+                                             "не содержать спецсимволов и цифр");
         }
+
+        return Result<None>.Ok(null!);
     }
 }

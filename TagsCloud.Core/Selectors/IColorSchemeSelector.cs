@@ -1,8 +1,9 @@
-using TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
+using TagsCloud.Core.Models;
+using TagsCloud.Core.Services.ImageGeneration.ColorSchemeProviders;
 
-namespace TagsCloud.Infrastructure.Selectors;
+namespace TagsCloud.Core.Selectors;
 
 public interface IColorSchemeSelector
 {
-    public IColorSchemeProvider Select(string name);
+    public Result<IColorSchemeProvider> Select(string name);
 }

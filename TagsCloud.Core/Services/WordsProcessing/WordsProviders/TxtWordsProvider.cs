@@ -1,6 +1,7 @@
-using TagsCloud.Infrastructure.Services.WordsProcessing.FileValidator;
+using TagsCloud.Core.Models;
+using TagsCloud.Core.Services.WordsProcessing.FileValidator;
 
-namespace TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
+namespace TagsCloud.Core.Services.WordsProcessing.WordsProviders;
 
 public class TxtWordsProvider : IWordsProvider
 {
@@ -11,10 +12,12 @@ public class TxtWordsProvider : IWordsProvider
         this.fileValidator = fileValidator;
     }
 
-    public List<string> ReadFile(string path)
+    public Result<List<string>> ReadFile(string path)
     {
-        fileValidator.Validate(path, FileFormat);
-
+        var validate = fileValidator.Validate(path, FileFormat);
+        if (!validate.IsSuccess)
+            return Result<List<string>>.Fail(validate.Error!);
+        
         var text = File.ReadAllText(path);
         var words = text
             .Replace("\r", "")
@@ -22,9 +25,9 @@ public class TxtWordsProvider : IWordsProvider
             .ToList();
 
         if (words.Count == 0)
-            throw new InvalidDataException("Файл пуст");
+            Result<List<string>>.Fail("Файл пуст");
 
-        return words;
+        return Result<List<string>>.Ok(words);
     }
 
     public string FileFormat => "txt";

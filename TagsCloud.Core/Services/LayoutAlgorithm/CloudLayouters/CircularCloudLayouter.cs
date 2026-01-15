@@ -1,9 +1,10 @@
 using System.Drawing;
 using System.Numerics;
-using TagsCloud.Infrastructure.Extensions;
-using TagsCloud.Infrastructure.Services.LayoutAlgorithm.Spirals;
+using TagsCloud.Core.Extensions;
+using TagsCloud.Core.Models;
+using TagsCloud.Core.Services.LayoutAlgorithm.Spirals;
 
-namespace TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
+namespace TagsCloud.Core.Services.LayoutAlgorithm.CloudLayouters;
 
 public class CircularCloudLayouter : ICloudLayouter
 {
@@ -18,16 +19,16 @@ public class CircularCloudLayouter : ICloudLayouter
 
     public List<Rectangle> Rectangles { get; } = [];
 
-    public Rectangle PutNextRectangle(Size rectangleSize)
+    public Result<Rectangle> PutNextRectangle(Size rectangleSize)
     {
         if (rectangleSize.Width <= 0 || rectangleSize.Height <= 0)
-            throw new ArgumentException("Размер прямоугольника должен быть больше нуля");
+            return Result<Rectangle>.Fail("Размер прямоугольника должен быть больше нуля");
 
         var rect = PlaceNext(rectangleSize);
         rect = MoveCloserToCenter(rect);
         Rectangles.Add(rect);
 
-        return rect;
+        return Result<Rectangle>.Ok(rect);
     }
 
     public void Reset()

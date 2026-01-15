@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace TagsCloud.Infrastructure.Services.ImageGeneration.FontProviders;
+namespace TagsCloud.Core.Services.ImageGeneration.FontProviders;
 
 public interface IFontProvider
 {

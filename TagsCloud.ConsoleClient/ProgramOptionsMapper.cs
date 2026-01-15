@@ -1,10 +1,10 @@
 using System.Drawing;
+using TagsCloud.Core.Models;
+using TagsCloud.Core.Selectors;
+using TagsCloud.Core.Services.ImageGeneration;
+using TagsCloud.Core.Services.ImageGeneration.ColorProvider;
+using TagsCloud.Core.Services.ImageGeneration.FontProviders;
 using TagsCloud.Dtos;
-using TagsCloud.Infrastructure.Models;
-using TagsCloud.Infrastructure.Selectors;
-using TagsCloud.Infrastructure.Services.ImageGeneration;
-using TagsCloud.Infrastructure.Services.ImageGeneration.ColorProvider;
-using TagsCloud.Infrastructure.Services.ImageGeneration.FontProviders;
 
 namespace TagsCloud;
 
@@ -31,23 +31,49 @@ public class ProgramOptionsMapper
         this.algorithmSelector = algorithmSelector;
     }
 
-    public ProgramOptions Map(ConsoleProgramOptionsDto dto)
+    public Result<ProgramOptions> Map(ConsoleProgramOptionsDto dto)
     {
-        return new ProgramOptions
+        var provideBackgroundColor = colorProvider.GetColor(dto.BackgroundColor);
+        if (!provideBackgroundColor.IsSuccess)
+            return Result<ProgramOptions>.Fail(provideBackgroundColor.Error!);
+
+        var colorSchemeSelect = colorSchemeSelector.Select(dto.ColorScheme);
+        if (!colorSchemeSelect.IsSuccess)
+            return Result<ProgramOptions>.Fail(colorSchemeSelect.Error!);
+
+        var provideTextColor = colorProvider.GetColors(dto.TextColor.Split(','));
+        if (!provideTextColor.IsSuccess)
+            return Result<ProgramOptions>.Fail(provideTextColor.Error!);
+        
+        var selectAlgorithm = algorithmSelector.Select(dto.AlgorithmName);
+        if (!selectAlgorithm.IsSuccess)
+            return Result<ProgramOptions>.Fail(selectAlgorithm.Error!);
+
+        var provideWords = wordsProviderSelector.Select(Path.GetExtension(dto.InputWordsFilePath).Trim('.'));
+        if (!provideWords.IsSuccess)
+            return Result<ProgramOptions>.Fail(provideWords.Error!);
+
+        var parseImageFormat = ImageFormatParser.Parse(dto.ImageFormat);
+        if (!parseImageFormat.IsSuccess)
+            return Result<ProgramOptions>.Fail(parseImageFormat.Error!);
+        
+        var options = new ProgramOptions
         {
             InputWordsFilePath = dto.InputWordsFilePath,
             InputBoringWordsFilePath = dto.InputBoringWordsFilePath,
             ImageOptions = new ImageOptions
             {
-                BackgroundColor = colorProvider.GetColor(dto.BackgroundColor),
-                ColorScheme = colorSchemeSelector.Select(dto.ColorScheme),
+                BackgroundColor = provideBackgroundColor.Value,
+                ColorScheme = colorSchemeSelect.Value!,
                 Font = fontProvider.GetFont(dto.FontName, dto.FontSize),
-                ImageFormat = ImageFormatParser.Parse(dto.ImageFormat),
+                ImageFormat = parseImageFormat.Value!,
                 ImageSize = new Size(dto.ImageWidth, dto.ImageHeight),
-                TextColors = colorProvider.GetColors(dto.TextColor.Split(',').ToArray())
+                TextColors = provideTextColor.Value!
             },
-            Algorithm = algorithmSelector.Select(dto.AlgorithmName),
-            WordsProvider = wordsProviderSelector.Select(Path.GetExtension(dto.InputWordsFilePath).Trim('.'))
+            Algorithm = selectAlgorithm.Value!,
+            WordsProvider = provideWords.Value!
         };
+        
+        return Result<ProgramOptions>.Ok(options);
     }
 }

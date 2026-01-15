@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace TagsCloud.Infrastructure.Extensions;
+namespace TagsCloud.Core.Extensions;
 
 public static class RectangleExtensions
 {

@@ -1,6 +1,6 @@
-using TagsCloud.Infrastructure.Services.WordsProcessing.DocumentWriters;
-using TagsCloud.Infrastructure.Services.WordsProcessing.FileValidator;
-using TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
+using TagsCloud.Core.Services.WordsProcessing.DocumentWriters;
+using TagsCloud.Core.Services.WordsProcessing.FileValidator;
+using TagsCloud.Core.Services.WordsProcessing.WordsProviders;
 
 namespace TagsCloud.Test.WordsPreprocessorTests.WordsHandlersTests;
 

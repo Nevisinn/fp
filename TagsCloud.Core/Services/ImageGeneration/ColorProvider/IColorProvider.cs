@@ -1,9 +1,10 @@
 using System.Drawing;
+using TagsCloud.Core.Models;
 
-namespace TagsCloud.Infrastructure.Services.ImageGeneration.ColorProvider;
+namespace TagsCloud.Core.Services.ImageGeneration.ColorProvider;
 
 public interface IColorProvider
 {
-    public Color[] GetColors(string[] names);
-    public Color GetColor(string name);
+    public Result<Color[]> GetColors(string[] names);
+    public Result<Color> GetColor(string name);
 }

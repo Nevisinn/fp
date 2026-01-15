@@ -1,16 +1,20 @@
-namespace TagsCloud.Infrastructure.Services.WordsProcessing.FileValidator;
+using TagsCloud.Core.Models;
+
+namespace TagsCloud.Core.Services.WordsProcessing.FileValidator;
 
 public class FileValidator : IFileValidator
 {
-    public void Validate(string path, string expectedExtension)
+    public Result<None> Validate(string path, string expectedExtension)
     {
         if (string.IsNullOrEmpty(path))
-            throw new ArgumentException("Путь до файла не валиден");
+            return Result<None>.Fail("Путь до файла не валиден");
 
-        if (!File.Exists(path)) throw new FileNotFoundException("Файл не найден");
+        if (!File.Exists(path)) return Result<None>.Fail("Файл не найден");
 
         var ext = Path.GetExtension(path).TrimStart('.').ToLower();
         if (expectedExtension != ext)
-            throw new NotSupportedException($"Формат файла {ext} не поддерживается");
+            return Result<None>.Fail($"Формат файла {ext} не поддерживается");
+
+        return Result<None>.Ok(null!);
     }
 }

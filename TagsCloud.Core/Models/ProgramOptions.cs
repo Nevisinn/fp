@@ -1,7 +1,7 @@
-using TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
-using TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
+using TagsCloud.Core.Services.LayoutAlgorithm.CloudLayouters;
+using TagsCloud.Core.Services.WordsProcessing.WordsProviders;
 
-namespace TagsCloud.Infrastructure.Models;
+namespace TagsCloud.Core.Models;
 
 public class ProgramOptions
 {

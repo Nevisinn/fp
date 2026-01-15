@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace TagsCloud.Infrastructure.Services.WordsProcessing;
+namespace TagsCloud.Core.Services.WordsProcessing;
 
 public static class WordsMeasurer
 {

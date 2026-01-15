@@ -1,6 +1,6 @@
 using System.Drawing;
 
-namespace TagsCloud.Infrastructure.Services.LayoutAlgorithm.Spirals;
+namespace TagsCloud.Core.Services.LayoutAlgorithm.Spirals;
 
 public interface ISpiral
 {

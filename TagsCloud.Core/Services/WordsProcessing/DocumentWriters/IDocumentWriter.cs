@@ -1,4 +1,4 @@
-namespace TagsCloud.Infrastructure.Services.WordsProcessing.DocumentWriters;
+namespace TagsCloud.Core.Services.WordsProcessing.DocumentWriters;
 
 public interface IDocumentWriter : INamedService
 {

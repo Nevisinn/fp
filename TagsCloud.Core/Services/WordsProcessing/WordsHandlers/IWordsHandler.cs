@@ -1,10 +1,10 @@
-using TagsCloud.Infrastructure.Models;
+using TagsCloud.Core.Models;
 
-namespace TagsCloud.Infrastructure.Services.WordsProcessing.WordsHandlers;
+namespace TagsCloud.Core.Services.WordsProcessing.WordsHandlers;
 
 public interface IWordsHandler
 {
     public IWordsHandler? NextHandler { get; set; }
     public ProgramOptions Options { get; set; }
-    public List<string> Handle(List<string> words);
+    public Result<List<string>> Handle(List<string> words);
 }

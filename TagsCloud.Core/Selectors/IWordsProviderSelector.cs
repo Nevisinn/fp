@@ -1,8 +1,9 @@
-using TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
+using TagsCloud.Core.Models;
+using TagsCloud.Core.Services.WordsProcessing.WordsProviders;
 
-namespace TagsCloud.Infrastructure.Selectors;
+namespace TagsCloud.Core.Selectors;
 
 public interface IWordsProviderSelector
 {
-    public IWordsProvider Select(string name);
+    public Result<IWordsProvider> Select(string name);
 }

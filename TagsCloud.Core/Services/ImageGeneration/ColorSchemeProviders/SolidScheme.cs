@@ -1,7 +1,7 @@
 using System.Drawing;
-using TagsCloud.Infrastructure.Models;
+using TagsCloud.Core.Models;
 
-namespace TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
+namespace TagsCloud.Core.Services.ImageGeneration.ColorSchemeProviders;
 
 public class SolidScheme : IColorSchemeProvider
 {

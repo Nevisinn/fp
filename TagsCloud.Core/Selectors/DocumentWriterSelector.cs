@@ -1,6 +1,6 @@
-using TagsCloud.Infrastructure.Services.WordsProcessing.DocumentWriters;
+using TagsCloud.Core.Services.WordsProcessing.DocumentWriters;
 
-namespace TagsCloud.Infrastructure.Selectors;
+namespace TagsCloud.Core.Selectors;
 
 public class DocumentWriterSelector : BaseSelector<IDocumentWriter>, IDocumentWriterSelector
 {

@@ -1,6 +1,6 @@
 using Spire.Doc;
 
-namespace TagsCloud.Infrastructure.Services.WordsProcessing.DocumentWriters;
+namespace TagsCloud.Core.Services.WordsProcessing.DocumentWriters;
 
 public class DocxWriter : IDocumentWriter
 {

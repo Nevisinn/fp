@@ -1,8 +1,8 @@
 using System.Drawing;
 using System.Drawing.Imaging;
-using TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
+using TagsCloud.Core.Services.ImageGeneration.ColorSchemeProviders;
 
-namespace TagsCloud.Infrastructure.Models;
+namespace TagsCloud.Core.Models;
 
 public class ImageOptions
 {

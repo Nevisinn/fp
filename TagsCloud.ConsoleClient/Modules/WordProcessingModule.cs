@@ -1,10 +1,10 @@
 using Autofac;
-using TagsCloud.Infrastructure.Selectors;
-using TagsCloud.Infrastructure.Services.WordsProcessing.DocumentWriters;
-using TagsCloud.Infrastructure.Services.WordsProcessing.FileValidator;
-using TagsCloud.Infrastructure.Services.WordsProcessing.WordsHandlers;
-using TagsCloud.Infrastructure.Services.WordsProcessing.WordsPreprocessors;
-using TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
+using TagsCloud.Core.Selectors;
+using TagsCloud.Core.Services.WordsProcessing.DocumentWriters;
+using TagsCloud.Core.Services.WordsProcessing.FileValidator;
+using TagsCloud.Core.Services.WordsProcessing.WordsHandlers;
+using TagsCloud.Core.Services.WordsProcessing.WordsPreprocessors;
+using TagsCloud.Core.Services.WordsProcessing.WordsProviders;
 
 namespace TagsCloud.Modules;
 

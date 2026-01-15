@@ -1,9 +1,10 @@
 using System.Drawing;
+using TagsCloud.Core.Models;
 
-namespace TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
+namespace TagsCloud.Core.Services.LayoutAlgorithm.CloudLayouters;
 
 public interface ICloudLayouter : INamedService
 {
-    public Rectangle PutNextRectangle(Size rectangleSize);
+    public Result<Rectangle> PutNextRectangle(Size rectangleSize);
     public void Reset();
 }

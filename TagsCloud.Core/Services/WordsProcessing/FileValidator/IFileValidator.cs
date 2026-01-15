@@ -1,6 +1,8 @@
-namespace TagsCloud.Infrastructure.Services.WordsProcessing.FileValidator;
+using TagsCloud.Core.Models;
+
+namespace TagsCloud.Core.Services.WordsProcessing.FileValidator;
 
 public interface IFileValidator
 {
-    public void Validate(string path, string expectedExtension);
+    public Result<None> Validate(string path, string expectedExtension);
 }

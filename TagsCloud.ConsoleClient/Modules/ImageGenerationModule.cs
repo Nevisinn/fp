@@ -1,9 +1,9 @@
 using Autofac;
-using TagsCloud.Infrastructure.Selectors;
-using TagsCloud.Infrastructure.Services.ImageGeneration.CloudVisualizers;
-using TagsCloud.Infrastructure.Services.ImageGeneration.ColorProvider;
-using TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
-using TagsCloud.Infrastructure.Services.ImageGeneration.FontProviders;
+using TagsCloud.Core.Selectors;
+using TagsCloud.Core.Services.ImageGeneration.CloudVisualizers;
+using TagsCloud.Core.Services.ImageGeneration.ColorProvider;
+using TagsCloud.Core.Services.ImageGeneration.ColorSchemeProviders;
+using TagsCloud.Core.Services.ImageGeneration.FontProviders;
 
 namespace TagsCloud.Modules;
 

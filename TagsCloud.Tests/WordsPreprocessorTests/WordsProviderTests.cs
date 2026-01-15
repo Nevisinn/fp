@@ -1,6 +1,6 @@
 using FluentAssertions;
-using TagsCloud.Infrastructure.Services.WordsProcessing.DocumentWriters;
-using TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
+using TagsCloud.Core.Services.WordsProcessing.DocumentWriters;
+using TagsCloud.Core.Services.WordsProcessing.WordsProviders;
 
 namespace TagsCloud.Test.WordsPreprocessorTests;
 
@@ -37,48 +37,55 @@ public abstract class WordsProviderTests
         };
 
         writer.WriteText(filePath, inputText);
-        var words = provider.ReadFile(filePath);
+        
+        var readFile = provider.ReadFile(filePath);
+        var words = readFile.Value;
 
+        readFile.IsSuccess.Should().BeTrue();
         words.Should().BeEquivalentTo(expectedWords);
     }
 
     [Test]
-    public void ReadFile_ShouldThrow_WhenFileNotFound()
+    public void ReadFile_ShouldReturnFailure_WhenFileNotFound()
     {
         var missingPath = filePath + "missing";
 
-        var readFile = () => provider.ReadFile(missingPath);
+        var readFile =  provider.ReadFile(missingPath);
 
-        readFile.Should().Throw<FileNotFoundException>();
+        readFile.IsSuccess.Should().BeFalse();
+        readFile.Error.Should().Be("Файл не найден");
     }
 
     [Test]
-    public void ReadFile_ShouldThrow_WhenFileIsEmpty()
+    public void ReadFile_ShouldReturnFailure_WhenFileIsEmpty()
     {
         writer.WriteText(filePath, string.Empty);
 
-        var readFile = () => provider.ReadFile(filePath);
-
-        readFile.Should().Throw<InvalidDataException>("Файл пуст");
+        var readFile = provider.ReadFile(filePath);
+        
+        readFile.IsSuccess.Should().BeFalse();
+        readFile.Error.Should().Be("Файл пуст");
     }
 
     [Test]
-    public void ReadFile_ShouldThrow_WhenFilePathIsNull()
+    public void ReadFile_ShouldReturnFailure_WhenFilePathIsNull()
     {
         filePath = null;
 
-        var readFile = () => provider.ReadFile(filePath);
-
-        readFile.Should().Throw<ArgumentException>("Путь до файла не валиден");
+        var readFile = provider.ReadFile(filePath);
+        
+        readFile.IsSuccess.Should().BeFalse();
+        readFile.Error.Should().Be("Путь до файла не валиден");
     }
 
     [Test]
-    public void ReadFile_ShouldThrow_WhenFilePathIsEmpty()
+    public void ReadFile_ShouldReturnFailure_WhenFilePathIsEmpty()
     {
         filePath = "";
 
-        var readFile = () => provider.ReadFile(filePath);
-
-        readFile.Should().Throw<ArgumentException>("Путь до файла не валиден");
+        var readFile =  provider.ReadFile(filePath);
+        
+        readFile.IsSuccess.Should().BeFalse();
+        readFile.Error.Should().Be("Путь до файла не валиден");
     }
 }

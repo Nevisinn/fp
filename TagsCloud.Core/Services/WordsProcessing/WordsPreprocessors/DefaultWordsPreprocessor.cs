@@ -1,32 +1,37 @@
-using TagsCloud.Infrastructure.Models;
-using TagsCloud.Infrastructure.Services.WordsProcessing.WordsHandlers;
+using TagsCloud.Core.Models;
+using TagsCloud.Core.Services.WordsProcessing.WordsHandlers;
 
-namespace TagsCloud.Infrastructure.Services.WordsProcessing.WordsPreprocessors;
+namespace TagsCloud.Core.Services.WordsProcessing.WordsPreprocessors;
 
 public class DefaultWordsPreprocessor : IWordsPreprocessor
 {
-    private readonly IEnumerable<IWordsHandler> wordsHandlers;
+    private readonly IEnumerable<IWordsHandler>? wordsHandlers;
 
     public DefaultWordsPreprocessor(IEnumerable<IWordsHandler> wordsHandlers)
     {
         this.wordsHandlers = wordsHandlers;
     }
 
-    public List<string> Process(List<string> words, ProgramOptions options)
+    public Result<List<string>> Process(List<string> words, ProgramOptions options)
     {
         if (wordsHandlers == null)
-            throw new ArgumentNullException("Обработчики не найдены");
+            return Result<List<string>>.Fail("Обработчики не найдены");
 
         if (words.Any(word => word.Any(c => !char.IsLetter(c))))
-            throw new ArgumentException(
+            return Result<List<string>>.Fail(
                 "Слова должны состоять только из букв и быть записаны по одному в каждой строке");
 
         var handlersList = wordsHandlers.ToList();
 
-        foreach (var handler in handlersList) handler.Options = options;
+        foreach (var handler in handlersList) 
+            handler.Options = options;
 
-        for (var i = 0; i < handlersList.Count - 1; i++) handlersList[i].NextHandler = handlersList[i + 1];
+        for (var i = 0; i < handlersList.Count - 1; i++) 
+            handlersList[i].NextHandler = handlersList[i + 1];
 
-        return handlersList.First().Handle(words).Select(w => w.ToLower()).ToList();
+        var handleWords = handlersList.First().Handle(words);
+        return !handleWords.IsSuccess 
+            ? Result<List<string>>.Fail(handleWords.Error!) 
+            : Result<List<string>>.Ok(handleWords.Value!.Select(w => w.ToLower()).ToList());
     }
 }

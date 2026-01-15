@@ -1,8 +1,8 @@
-using TagsCloud.Infrastructure.Models;
+using TagsCloud.Core.Models;
 
-namespace TagsCloud.Infrastructure.Services.ImageGeneration.CloudVisualizers;
+namespace TagsCloud.Core.Services.ImageGeneration.CloudVisualizers;
 
 public interface ICloudVisualizer
 {
-    public void VisualizeWordsWithOptions(List<string> words, ProgramOptions options);
+    public Result<string> VisualizeWordsWithOptions(List<string> words, ProgramOptions options);
 }

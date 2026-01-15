@@ -1,20 +1,20 @@
 using System.Drawing.Imaging;
+using TagsCloud.Core.Models;
 
-namespace TagsCloud.Infrastructure.Services.ImageGeneration;
+namespace TagsCloud.Core.Services.ImageGeneration;
 
 public class ImageFormatParser
 {
-    public static ImageFormat Parse(string format)
+    public static Result<ImageFormat> Parse(string format)
     {
         if (string.IsNullOrEmpty(format))
-            throw new ArgumentException("Формат не может быть пустым");
+            return Result<ImageFormat>.Fail("Формат не может быть пустым");
 
         return format.ToLowerInvariant() switch
         {
-            "png" => ImageFormat.Png,
-            "jpg" => ImageFormat.Jpeg,
-            "jpeg" => ImageFormat.Jpeg,
-            "bmp" => ImageFormat.Bmp,
+            "png" => Result<ImageFormat>.Ok(ImageFormat.Png),
+            "jpeg" => Result<ImageFormat>.Ok(ImageFormat.Jpeg),
+            "bmp" => Result<ImageFormat>.Ok(ImageFormat.Bmp),
             _ => throw new ArgumentException($"Неподдерживаемый формат: {format}")
         };
     }

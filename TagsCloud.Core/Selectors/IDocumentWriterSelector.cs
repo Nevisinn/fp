@@ -1,8 +1,9 @@
-using TagsCloud.Infrastructure.Services.WordsProcessing.DocumentWriters;
+using TagsCloud.Core.Models;
+using TagsCloud.Core.Services.WordsProcessing.DocumentWriters;
 
-namespace TagsCloud.Infrastructure.Selectors;
+namespace TagsCloud.Core.Selectors;
 
 public interface IDocumentWriterSelector
 {
-    public IDocumentWriter Select(string name);
+    public Result<IDocumentWriter> Select(string name);
 }

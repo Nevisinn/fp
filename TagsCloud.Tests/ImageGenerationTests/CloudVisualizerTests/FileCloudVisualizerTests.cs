@@ -2,12 +2,12 @@ using System.Drawing;
 using System.Drawing.Imaging;
 using FakeItEasy;
 using FluentAssertions;
-using TagsCloud.Infrastructure.Models;
-using TagsCloud.Infrastructure.Services.ImageGeneration.CloudVisualizers;
-using TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
-using TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
-using TagsCloud.Infrastructure.Services.WordsProcessing.WordsPreprocessors;
-using TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
+using TagsCloud.Core.Models;
+using TagsCloud.Core.Services.ImageGeneration.CloudVisualizers;
+using TagsCloud.Core.Services.ImageGeneration.ColorSchemeProviders;
+using TagsCloud.Core.Services.LayoutAlgorithm.CloudLayouters;
+using TagsCloud.Core.Services.WordsProcessing.WordsPreprocessors;
+using TagsCloud.Core.Services.WordsProcessing.WordsProviders;
 
 namespace TagsCloud.Test.ImageGenerationTests.CloudVisualizerTests;
 
@@ -60,9 +60,9 @@ public class FileCloudVisualizerTests
         outputImageFilePath = @$"{projectDirectory}\Images\cloud_with_{preProcessedWords.Count}_words" +
                               $".{options.ImageOptions.ImageFormat}";
         A.CallTo(() => layouter.PutNextRectangle(A<Size>._))
-            .Returns(new Rectangle(0, 0, 10, 10));
+            .Returns(Result<Rectangle>.Ok(new Rectangle(0, 0, 10, 10)));
         A.CallTo(() => wordsPreprocessor.Process(words, options))
-            .Returns(preProcessedWords);
+            .Returns(Result<List<string>>.Ok(preProcessedWords));
     }
 
     [Test]

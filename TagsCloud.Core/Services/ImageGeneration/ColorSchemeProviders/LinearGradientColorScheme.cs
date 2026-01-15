@@ -1,8 +1,8 @@
 using System.Drawing;
 using System.Drawing.Drawing2D;
-using TagsCloud.Infrastructure.Models;
+using TagsCloud.Core.Models;
 
-namespace TagsCloud.Infrastructure.Services.ImageGeneration.ColorSchemeProviders;
+namespace TagsCloud.Core.Services.ImageGeneration.ColorSchemeProviders;
 
 public class LinearGradientColorScheme : IColorSchemeProvider
 {

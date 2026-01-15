@@ -1,4 +1,4 @@
-namespace TagsCloud.Infrastructure.Services;
+namespace TagsCloud.Core.Services;
 
 public interface INamedService
 {

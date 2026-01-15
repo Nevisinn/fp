@@ -1,8 +1,9 @@
-using TagsCloud.Infrastructure.Models;
+using TagsCloud.Core.Models;
 
-namespace TagsCloud.Infrastructure.Services.WordsProcessing.WordsPreprocessors;
+namespace TagsCloud.Core.Services.WordsProcessing.WordsPreprocessors;
 
 public interface IWordsPreprocessor
 {
-    public List<string> Process(List<string> words, ProgramOptions options);
+    public Result<List<string>> Process(List<string> words, ProgramOptions options);
+
 }

@@ -1,6 +1,6 @@
-using TagsCloud.Infrastructure.Services.WordsProcessing.WordsProviders;
+using TagsCloud.Core.Services.WordsProcessing.WordsProviders;
 
-namespace TagsCloud.Infrastructure.Selectors;
+namespace TagsCloud.Core.Selectors;
 
 public class WordsProviderSelector : BaseSelector<IWordsProvider>, IWordsProviderSelector
 {

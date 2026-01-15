@@ -1,8 +1,9 @@
-using TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
+using TagsCloud.Core.Models;
+using TagsCloud.Core.Services.LayoutAlgorithm.CloudLayouters;
 
-namespace TagsCloud.Infrastructure.Selectors;
+namespace TagsCloud.Core.Selectors;
 
 public interface IAlgorithmSelector
 {
-    public ICloudLayouter Select(string name);
+    public Result<ICloudLayouter> Select(string name);
 }

@@ -1,7 +1,7 @@
 using Autofac;
-using TagsCloud.Infrastructure.Selectors;
-using TagsCloud.Infrastructure.Services.LayoutAlgorithm.CloudLayouters;
-using TagsCloud.Infrastructure.Services.LayoutAlgorithm.Spirals;
+using TagsCloud.Core.Selectors;
+using TagsCloud.Core.Services.LayoutAlgorithm.CloudLayouters;
+using TagsCloud.Core.Services.LayoutAlgorithm.Spirals;
 
 namespace TagsCloud.Modules;
 

@@ -1,23 +1,32 @@
 using System.Drawing;
+using TagsCloud.Core.Models;
 
-namespace TagsCloud.Infrastructure.Services.ImageGeneration.ColorProvider;
+namespace TagsCloud.Core.Services.ImageGeneration.ColorProvider;
 
 public class ColorProvider : IColorProvider
 {
-    public Color[] GetColors(string[] names)
+    public Result<Color[]> GetColors(string[] names)
     {
         var colors = new List<Color>();
-        foreach (var name in names) colors.Add(GetColor(name));
+        foreach (var name in names)
+        {   
+            var getColor = GetColor(name);
 
-        return colors.ToArray();
+            if (!getColor.IsSuccess)
+                return Result<Color[]>.Fail(getColor.Error!);
+            
+            colors.Add(getColor.Value);
+        }
+        
+        return Result<Color[]>.Ok(colors.ToArray());
     }
 
-    public Color GetColor(string name)
+    public Result<Color> GetColor(string name)
     {
         var color = Color.FromName(name);
 
-        if (!color.IsKnownColor) throw new ArgumentException($"Цвет {name} не найден");
+        if (!color.IsKnownColor) return Result<Color>.Fail($"Цвет {name} не найден");
 
-        return color;
+        return Result<Color>.Ok(color);
     }
 }
