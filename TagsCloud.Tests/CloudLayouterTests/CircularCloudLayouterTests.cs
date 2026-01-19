@@ -64,12 +64,12 @@ public class CloudLayouterTests
 
     [Test]
     public void PutNextRectangle_ShouldNotIntersects_WhenSameSize()
-    {   
+    {
         var putFirstRectangle = cloudLayouter.PutNextRectangle(new Size(10, 10));
         var putSecondRectangle = cloudLayouter.PutNextRectangle(new Size(10, 10));
         var rectangle1 = putFirstRectangle.Value;
-        var rectangle2 = putSecondRectangle.Value; 
-        
+        var rectangle2 = putSecondRectangle.Value;
+
         putFirstRectangle.IsSuccess.Should().BeTrue();
         putSecondRectangle.IsSuccess.Should().BeTrue();
         rectangle1.IntersectsWith(rectangle2).Should().BeFalse();
@@ -77,11 +77,11 @@ public class CloudLayouterTests
 
     [Test]
     public void PutNextRectangle_ShouldBeInCenter_WhenPutFirstRectangle()
-    {   
+    {
         var putRectangle = cloudLayouter.PutNextRectangle(new Size(10, 10));
-        
+
         putRectangle.IsSuccess.Should().BeTrue();
-        
+
         var rectangle = putRectangle.Value;
         var rectangleCenter = rectangle.Center();
 
@@ -103,10 +103,10 @@ public class CloudLayouterTests
     public void PutNextRectangle_ShouldHaveCorrectSize_WhenPutRectangle()
     {
         var size = new Size(15, 20);
-        
+
         var putRectangle = cloudLayouter.PutNextRectangle(size);
         putRectangle.IsSuccess.Should().BeTrue();
-        
+
         var rectangle = putRectangle.Value;
 
         rectangle.Width.Should().Be(size.Width);

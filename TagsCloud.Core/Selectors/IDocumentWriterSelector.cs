@@ -5,5 +5,5 @@ namespace TagsCloud.Core.Selectors;
 
 public interface IDocumentWriterSelector
 {
-    public Result<IDocumentWriter> Select(string name);
+    public Result<IDocumentWriter> Select(string name, string parameterName);
 }

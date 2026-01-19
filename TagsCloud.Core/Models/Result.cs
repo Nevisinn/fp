@@ -16,7 +16,7 @@ public class Result<TValue>
     public string? Error { get; }
     public TValue? Value { get; }
     public bool IsSuccess => Error == null;
-    
+
     public static Result<TValue> Ok(TValue value)
     {
         return new Result<TValue>(value);

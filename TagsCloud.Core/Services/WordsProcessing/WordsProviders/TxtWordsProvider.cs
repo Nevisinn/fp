@@ -17,7 +17,7 @@ public class TxtWordsProvider : IWordsProvider
         var validate = fileValidator.Validate(path, FileFormat);
         if (!validate.IsSuccess)
             return Result<List<string>>.Fail(validate.Error!);
-        
+
         var text = File.ReadAllText(path);
         var words = text
             .Replace("\r", "")
@@ -25,7 +25,7 @@ public class TxtWordsProvider : IWordsProvider
             .ToList();
 
         if (words.Count == 0)
-            Result<List<string>>.Fail("Файл пуст");
+            return Result<List<string>>.Fail("Файл пуст");
 
         return Result<List<string>>.Ok(words);
     }

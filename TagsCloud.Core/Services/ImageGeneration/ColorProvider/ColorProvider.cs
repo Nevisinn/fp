@@ -9,15 +9,15 @@ public class ColorProvider : IColorProvider
     {
         var colors = new List<Color>();
         foreach (var name in names)
-        {   
+        {
             var getColor = GetColor(name);
 
             if (!getColor.IsSuccess)
                 return Result<Color[]>.Fail(getColor.Error!);
-            
+
             colors.Add(getColor.Value);
         }
-        
+
         return Result<Color[]>.Ok(colors.ToArray());
     }
 

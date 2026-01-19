@@ -5,5 +5,5 @@ namespace TagsCloud.Core.Selectors;
 
 public interface IAlgorithmSelector
 {
-    public Result<ICloudLayouter> Select(string name);
+    public Result<ICloudLayouter> Select(string name, string parameterName);
 }

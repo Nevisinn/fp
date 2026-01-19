@@ -18,23 +18,24 @@ public class BoringWordsHandler : IWordsHandler
     public Result<List<string>> Handle(List<string> words)
     {
         var boringWordsFileExtension = Path.GetExtension(Options.InputBoringWordsFilePath).TrimStart('.').ToLower();
-        var selectProvider = selector.Select(boringWordsFileExtension);
+        var selectProvider = selector
+            .Select(boringWordsFileExtension, nameof(Options.InputBoringWordsFilePath));
 
         if (!selectProvider.IsSuccess)
             return Result<List<string>>.Fail(selectProvider.Error!);
-        
+
         var provider = selectProvider.Value!;
-        
+
         var readFile = provider.ReadFile(Options.InputBoringWordsFilePath);
         if (!readFile.IsSuccess)
             return Result<List<string>>.Fail(readFile.Error!);
-        
+
         var boringWords = readFile.Value!;
 
         var validateBoringWords = ValidateBoringWords(boringWords);
         if (!validateBoringWords.IsSuccess)
             return Result<List<string>>.Fail(validateBoringWords.Error!);
-        
+
         var handledWords = new List<string>();
 
         foreach (var word in words)

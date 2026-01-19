@@ -18,7 +18,7 @@ public class DocWordsProvider : IWordsProvider
         var validate = fileValidator.Validate(path, FileFormat);
         if (!validate.IsSuccess)
             return Result<List<string>>.Fail(validate.Error!);
-        
+
         using var document = new Document();
         document.LoadFromFile(path);
         var text = document.GetText();

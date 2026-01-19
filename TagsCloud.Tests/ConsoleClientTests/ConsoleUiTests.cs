@@ -1,6 +1,7 @@
 using System.Reflection;
 using Autofac;
 using FluentAssertions;
+using TagsCloud.Dtos;
 using TagsCloud.Modules;
 
 namespace TagsCloud.Test.ConsoleClientTests;
@@ -21,23 +22,26 @@ public class ConsoleUiTests
     public void TearDown()
     {
         container.Dispose();
-        File.Delete(outputImagePath);
+        if (File.Exists(outputImagePath))
+            File.Delete(outputImagePath);
     }
 
-    private readonly string inputFilePath;
-    private readonly string boringWordsFilePath;
     private readonly string imagesDir;
     private string outputImagePath;
     private IContainer container;
+    private readonly ConsoleProgramOptionsDto dto;
 
     public ConsoleUiTests()
     {
         var workingDirectory = Environment.CurrentDirectory;
         var projectDirectory = Directory.GetParent(workingDirectory)!.Parent!.Parent!.FullName;
-        inputFilePath = Path.Combine($"{projectDirectory}", "ConsoleClientTests", "input.txt");
-        boringWordsFilePath = Path.Combine($"{projectDirectory}", "ConsoleClientTests", "boringWords.txt");
         imagesDir = Path.Combine($"{projectDirectory}", "Images");
         outputImagePath = "";
+        dto = new ConsoleProgramOptionsDto
+        {
+            InputWordsFilePath = Path.Combine($"{projectDirectory}", "ConsoleClientTests", "input.txt"),
+            BoringWordsFilePath = Path.Combine($"{projectDirectory}", "ConsoleClientTests", "boringWords.txt")
+        };
     }
 
     [Test]
@@ -45,8 +49,8 @@ public class ConsoleUiTests
     {
         var args = new[]
         {
-            "--p", $"{inputFilePath}",
-            "--boringWordsPath", $"{boringWordsFilePath}"
+            $"--{nameof(dto.InputWordsFilePath)}", dto.InputWordsFilePath,
+            $"--{nameof(dto.BoringWordsFilePath)}", dto.BoringWordsFilePath
         };
         var consoleUi = container.Resolve<ConsoleUi>();
 
@@ -66,9 +70,9 @@ public class ConsoleUiTests
     {
         var args = new[]
         {
-            "--p", inputFilePath,
-            "--boringWordsPath", $"{boringWordsFilePath}",
-            "--f", format
+            $"--{nameof(dto.InputWordsFilePath)}", dto.InputWordsFilePath,
+            $"--{nameof(dto.BoringWordsFilePath)}", dto.BoringWordsFilePath,
+            $"--{nameof(dto.ImageFormat)}", format
         };
         var consoleUi = container.Resolve<ConsoleUi>();
 
@@ -86,9 +90,9 @@ public class ConsoleUiTests
     {
         var args = new[]
         {
-            "--p", inputFilePath,
-            "--boringWordsPath", $"{boringWordsFilePath}",
-            "--a", algorithm
+            $"--{nameof(dto.InputWordsFilePath)}", dto.InputWordsFilePath,
+            $"--{nameof(dto.BoringWordsFilePath)}", dto.BoringWordsFilePath,
+            $"--{nameof(dto.AlgorithmName)}", algorithm
         };
         var consoleUi = container.Resolve<ConsoleUi>();
 
@@ -106,9 +110,9 @@ public class ConsoleUiTests
     {
         var args = new[]
         {
-            "--path", inputFilePath,
-            "--boringWordsPath", $"{boringWordsFilePath}",
-            "--bg", bgColor
+            $"--{nameof(dto.InputWordsFilePath)}", dto.InputWordsFilePath,
+            $"--{nameof(dto.BoringWordsFilePath)}", dto.BoringWordsFilePath,
+            $"--{nameof(dto.BackgroundColor)}", bgColor
         };
         var consoleUi = container.Resolve<ConsoleUi>();
 
@@ -126,9 +130,9 @@ public class ConsoleUiTests
     {
         var args = new[]
         {
-            "--path", inputFilePath,
-            "--boringWordsPath", $"{boringWordsFilePath}",
-            "--text-color", textColor
+            $"--{nameof(dto.InputWordsFilePath)}", dto.InputWordsFilePath,
+            $"--{nameof(dto.BoringWordsFilePath)}", dto.BoringWordsFilePath,
+            $"--{nameof(dto.TextColor)}", textColor
         };
         var consoleUi = container.Resolve<ConsoleUi>();
 
@@ -146,9 +150,9 @@ public class ConsoleUiTests
     {
         var args = new[]
         {
-            "--path", inputFilePath,
-            "--boringWordsPath", $"{boringWordsFilePath}",
-            "--font-name", fontName
+            $"--{nameof(dto.InputWordsFilePath)}", dto.InputWordsFilePath,
+            $"--{nameof(dto.BoringWordsFilePath)}", dto.BoringWordsFilePath,
+            $"--{nameof(dto.FontName)}", fontName
         };
         var consoleUi = container.Resolve<ConsoleUi>();
 
@@ -157,5 +161,185 @@ public class ConsoleUiTests
         var files = Directory.GetFiles(imagesDir);
         files.Should().ContainSingle();
         outputImagePath = files[0];
+    }
+
+    [TestCase("qasdasd")]
+    public void Run_ShouldPrintFail_WithNotExistFontName(string fontName)
+    {
+        var writer = new StringWriter();
+        Console.SetOut(writer);
+        var message = $"Шрифт {fontName} не найден";
+        var args = new[]
+        {
+            $"--{nameof(dto.InputWordsFilePath)}", dto.InputWordsFilePath,
+            $"--{nameof(dto.BoringWordsFilePath)}", dto.BoringWordsFilePath,
+            $"--{nameof(dto.FontName)}", fontName
+        };
+        var consoleUi = container.Resolve<ConsoleUi>();
+
+        consoleUi.Run(args);
+
+        var output = writer.ToString().TrimEnd('\r', '\n');
+        output.Should().Be(message);
+    }
+
+    [TestCase("adasd")]
+    public void Run_ShouldPrintFail_WithNotExistTextColor(string textColor)
+    {
+        using var writer = new StringWriter();
+        Console.SetOut(writer);
+        var message = $"Цвет {textColor} не найден";
+        var args = new[]
+        {
+            $"--{nameof(dto.InputWordsFilePath)}", dto.InputWordsFilePath,
+            $"--{nameof(dto.BoringWordsFilePath)}", dto.BoringWordsFilePath,
+            $"--{nameof(dto.TextColor)}", textColor
+        };
+        var consoleUi = container.Resolve<ConsoleUi>();
+
+        consoleUi.Run(args);
+
+        var output = writer.ToString().TrimEnd('\r', '\n');
+        output.Should().Be(message);
+    }
+
+    [TestCase("qwe")]
+    public void Run_ShouldPrintFail_WithNotExistAlgorithm(string algorithm)
+    {
+        using var writer = new StringWriter();
+        Console.SetOut(writer);
+        var message = $"Параметр \"{nameof(dto.AlgorithmName)}: {algorithm}\" не валиден";
+        var args = new[]
+        {
+            $"--{nameof(dto.InputWordsFilePath)}", dto.InputWordsFilePath,
+            $"--{nameof(dto.BoringWordsFilePath)}", dto.BoringWordsFilePath,
+            $"--{nameof(dto.AlgorithmName)}", algorithm
+        };
+        var consoleUi = container.Resolve<ConsoleUi>();
+
+        consoleUi.Run(args);
+
+        var output = writer.ToString().TrimEnd('\r', '\n');
+        output.Should().Be(message);
+    }
+
+    [TestCase("abc")]
+    public void Run_ShouldPrintFail_WithNotExistImageFormats(string format)
+    {
+        using var writer = new StringWriter();
+        Console.SetOut(writer);
+        var message = $"Неподдерживаемый формат: {format}";
+        var args = new[]
+        {
+            $"--{nameof(dto.InputWordsFilePath)}", dto.InputWordsFilePath,
+            $"--{nameof(dto.BoringWordsFilePath)}", dto.BoringWordsFilePath,
+            $"--{nameof(dto.ImageFormat)}", format
+        };
+        var consoleUi = container.Resolve<ConsoleUi>();
+
+        consoleUi.Run(args);
+
+        var output = writer.ToString().TrimEnd('\r', '\n');
+        output.Should().Be(message);
+    }
+
+    [TestCase("qwe")]
+    [TestCase("qwe.abc")]
+    public void Run_ShouldPrintFail_WithInvalidPathExtension(string inputWordsFilePath)
+    {
+        using var writer = new StringWriter();
+        Console.SetOut(writer);
+        var extension = Path.GetExtension(inputWordsFilePath).TrimStart('.');
+        var message = $"Параметр \"{nameof(dto.InputWordsFilePath)}: {extension}\" не валиден";
+        var args = new[]
+        {
+            $"--{nameof(dto.InputWordsFilePath)}", inputWordsFilePath,
+            $"--{nameof(dto.BoringWordsFilePath)}", dto.BoringWordsFilePath
+        };
+        var consoleUi = container.Resolve<ConsoleUi>();
+
+        consoleUi.Run(args);
+
+        var output = writer.ToString().TrimEnd('\r', '\n');
+        output.Should().Be(message);
+    }
+
+    [TestCase("abc.txt")]
+    public void Run_ShouldPrintFail_WithNotExistPath(string inputWordsFilePath)
+    {
+        using var writer = new StringWriter();
+        Console.SetOut(writer);
+        var message = "Файл не найден";
+        var args = new[]
+        {
+            $"--{nameof(dto.InputWordsFilePath)}", inputWordsFilePath,
+            $"--{nameof(dto.BoringWordsFilePath)}", dto.BoringWordsFilePath
+        };
+        var consoleUi = container.Resolve<ConsoleUi>();
+
+        consoleUi.Run(args);
+
+        var output = writer.ToString().TrimEnd('\r', '\n');
+        output.Should().Be(message);
+    }
+
+    [TestCase("abc.txt")]
+    public void Run_ShouldPrintFail_WithNotExistBoringWordsPath(string boringWordsFilePath)
+    {
+        using var writer = new StringWriter();
+        Console.SetOut(writer);
+        var message = "Файл не найден";
+        var args = new[]
+        {
+            $"--{nameof(dto.InputWordsFilePath)}", dto.InputWordsFilePath,
+            $"--{nameof(dto.BoringWordsFilePath)}", boringWordsFilePath
+        };
+        var consoleUi = container.Resolve<ConsoleUi>();
+
+        consoleUi.Run(args);
+
+        var output = writer.ToString().TrimEnd('\r', '\n');
+        output.Should().Be(message);
+    }
+
+    [TestCase(50, 50)]
+    public void Run_ShouldPrintFail_WithSmallImageSize(int imageWidth, int imageHeight)
+    {
+        using var writer = new StringWriter();
+        Console.SetOut(writer);
+        var message = "Облако тегов не влезло в изображение заданного размера";
+        var args = new[]
+        {
+            $"--{nameof(dto.InputWordsFilePath)}", dto.InputWordsFilePath,
+            $"--{nameof(dto.BoringWordsFilePath)}", dto.BoringWordsFilePath,
+            $"--{nameof(dto.ImageWidth)}", imageWidth.ToString(),
+            $"--{nameof(dto.ImageHeight)}", imageHeight.ToString()
+        };
+        var consoleUi = container.Resolve<ConsoleUi>();
+
+        consoleUi.Run(args);
+
+        var output = writer.ToString().TrimEnd('\r', '\n');
+        output.Should().Be(message);
+    }
+
+    [TestCase(-50)]
+    public void Run_ShouldPrintFail_WithInvalidFontSize(int fontSize)
+    {
+        using var writer = new StringWriter();
+        Console.SetOut(writer);
+        var message = "Размер шрифта должен быть больше нуля";
+        var args = new[]
+        {
+            $"--{nameof(dto.InputWordsFilePath)}", dto.InputWordsFilePath,
+            $"--{nameof(dto.BoringWordsFilePath)}", dto.BoringWordsFilePath,
+            $"--{nameof(dto.FontSize)}", fontSize.ToString()
+        };
+        var consoleUi = container.Resolve<ConsoleUi>();
+
+        consoleUi.Run(args);
+
+        var output = writer.ToString().TrimEnd('\r', '\n');
+        output.Should().Be(message);
     }
 }

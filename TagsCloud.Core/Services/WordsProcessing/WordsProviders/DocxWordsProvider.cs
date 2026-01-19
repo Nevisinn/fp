@@ -18,7 +18,7 @@ public class DocxWordsProvider : IWordsProvider
         var validate = fileValidator.Validate(path, FileFormat);
         if (!validate.IsSuccess)
             return Result<List<string>>.Fail(validate.Error!);
-        
+
         using var document = new Document();
         document.LoadFromFile(path);
         var text = document.GetText();
@@ -28,7 +28,7 @@ public class DocxWordsProvider : IWordsProvider
             .ToList();
 
         if (words.Count == 0)
-            Result<List<string>>.Fail("Файл пуст");
+            return Result<List<string>>.Fail("Файл пуст");
 
         return Result<List<string>>.Ok(words);
     }

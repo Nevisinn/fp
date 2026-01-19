@@ -23,15 +23,15 @@ public class DefaultWordsPreprocessor : IWordsPreprocessor
 
         var handlersList = wordsHandlers.ToList();
 
-        foreach (var handler in handlersList) 
+        foreach (var handler in handlersList)
             handler.Options = options;
 
-        for (var i = 0; i < handlersList.Count - 1; i++) 
+        for (var i = 0; i < handlersList.Count - 1; i++)
             handlersList[i].NextHandler = handlersList[i + 1];
 
         var handleWords = handlersList.First().Handle(words);
-        return !handleWords.IsSuccess 
-            ? Result<List<string>>.Fail(handleWords.Error!) 
+        return !handleWords.IsSuccess
+            ? Result<List<string>>.Fail(handleWords.Error!)
             : Result<List<string>>.Ok(handleWords.Value!.Select(w => w.ToLower()).ToList());
     }
 }

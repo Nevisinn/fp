@@ -5,5 +5,5 @@ namespace TagsCloud.Core.Selectors;
 
 public interface IColorSchemeSelector
 {
-    public Result<IColorSchemeProvider> Select(string name);
+    public Result<IColorSchemeProvider> Select(string name, string parameterName);
 }

@@ -15,7 +15,7 @@ public class ImageFormatParser
             "png" => Result<ImageFormat>.Ok(ImageFormat.Png),
             "jpeg" => Result<ImageFormat>.Ok(ImageFormat.Jpeg),
             "bmp" => Result<ImageFormat>.Ok(ImageFormat.Bmp),
-            _ => throw new ArgumentException($"Неподдерживаемый формат: {format}")
+            _ => Result<ImageFormat>.Fail($"Неподдерживаемый формат: {format}")
         };
     }
 }

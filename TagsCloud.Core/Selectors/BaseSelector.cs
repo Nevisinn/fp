@@ -12,10 +12,10 @@ public abstract class BaseSelector<T> where T : INamedService
         this.services = services.ToDictionary(s => s.Name);
     }
 
-    public Result<T> Select(string name)
+    public Result<T> Select(string serviceName, string parameterName)
     {
-        if (!services.TryGetValue(name, out var service))
-            return Result<T>.Fail($"Параметр {name} не найден");
+        if (!services.TryGetValue(serviceName, out var service))
+            return Result<T>.Fail($"Параметр \"{parameterName}: {serviceName}\" не валиден");
 
         return Result<T>.Ok(service);
     }

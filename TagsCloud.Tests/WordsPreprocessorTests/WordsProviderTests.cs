@@ -37,7 +37,7 @@ public abstract class WordsProviderTests
         };
 
         writer.WriteText(filePath, inputText);
-        
+
         var readFile = provider.ReadFile(filePath);
         var words = readFile.Value;
 
@@ -50,7 +50,7 @@ public abstract class WordsProviderTests
     {
         var missingPath = filePath + "missing";
 
-        var readFile =  provider.ReadFile(missingPath);
+        var readFile = provider.ReadFile(missingPath);
 
         readFile.IsSuccess.Should().BeFalse();
         readFile.Error.Should().Be("Файл не найден");
@@ -62,7 +62,7 @@ public abstract class WordsProviderTests
         writer.WriteText(filePath, string.Empty);
 
         var readFile = provider.ReadFile(filePath);
-        
+
         readFile.IsSuccess.Should().BeFalse();
         readFile.Error.Should().Be("Файл пуст");
     }
@@ -73,7 +73,7 @@ public abstract class WordsProviderTests
         filePath = null;
 
         var readFile = provider.ReadFile(filePath);
-        
+
         readFile.IsSuccess.Should().BeFalse();
         readFile.Error.Should().Be("Путь до файла не валиден");
     }
@@ -83,8 +83,8 @@ public abstract class WordsProviderTests
     {
         filePath = "";
 
-        var readFile =  provider.ReadFile(filePath);
-        
+        var readFile = provider.ReadFile(filePath);
+
         readFile.IsSuccess.Should().BeFalse();
         readFile.Error.Should().Be("Путь до файла не валиден");
     }

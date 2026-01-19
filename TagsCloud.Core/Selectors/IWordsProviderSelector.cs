@@ -5,5 +5,5 @@ namespace TagsCloud.Core.Selectors;
 
 public interface IWordsProviderSelector
 {
-    public Result<IWordsProvider> Select(string name);
+    public Result<IWordsProvider> Select(string name, string parameterName);
 }
